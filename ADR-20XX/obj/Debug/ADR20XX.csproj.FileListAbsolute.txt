@@ -19,3 +19,6 @@ C:\Users\Atagait Denral\Desktop\20XX Source\GoldenTubes\obj\Debug\GoldenTubes.Ta
 C:\Users\Atagait Denral\Desktop\20XX Source\GoldenTubes\obj\Debug\ADR20XX.csproj.GenerateResource.Cache
 C:\Users\Atagait Denral\Desktop\20XX Source\GoldenTubes\obj\Debug\ADR-20XX.exe
 C:\Users\Atagait Denral\Desktop\20XX Source\GoldenTubes\obj\Debug\ADR-20XX.pdb
+C:\Users\Atagait Denral\Desktop\ADR-20XX\ADR-20XX\bin\Debug\ADR-20XX.exe.config
+C:\Users\Atagait Denral\Desktop\ADR-20XX\ADR-20XX\obj\Debug\ADR-20XX.exe
+C:\Users\Atagait Denral\Desktop\ADR-20XX\ADR-20XX\obj\Debug\ADR-20XX.pdb
