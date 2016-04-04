@@ -31,7 +31,6 @@ namespace GoldenTubes
         Thread upThread;
         Thread elThread;
         string User = "";
-        string IP = "";
         bool UpdateTheTime = true;
         //============================================================//
 
@@ -41,7 +40,6 @@ namespace GoldenTubes
 
             //This sets the "YearMonthDay" variable that is used in filenames. Format is YYYY-MM-DD
             YearMonthDay = DateTime.Today.Year.ToString() + "-" + DateTime.Today.Month.ToString() + "-" + DateTime.Today.Day.ToString();
-            IP = new WebClient().DownloadString("http://icanhazip.com").Replace("\n","");
             try
             {
                 //Attempts to load JSON data parsed from the day's daily data dump
@@ -202,7 +200,7 @@ namespace GoldenTubes
 
             while (running) //DO THIS SHIT UNTIL I TELL YOU TO STOP
             {
-                if (!UpdateTheTime) //This is so the user can tell it to stop updating the time.
+                if (!UpdateTheTime || User.Trim() == "") //This is so the user can tell it to stop updating the time.
                 {
                     Thread.Sleep(500); //This is here so that we don't keep running through a continue command every 1000th of a second.
                     continue;
@@ -212,7 +210,7 @@ namespace GoldenTubes
                 try
                 {
                     //I SWEAR VIOLET, I'LL BE A GOOD BOY
-                    client.Headers.Add("user-agent", "ALL HAIL 20XX. Currently in use by " + User + " at " + IP + ". Main Dev - doomjaw@hotmail.com");
+                    client.Headers.Add("user-agent", "ALL HAIL 20XX. Currently in use by " + User + ". Main Dev - doomjaw@hotmail.com");
                     //Grab the latest changes like they're juicy dicks
                     string xmlSrc = client.DownloadString("http://www.nationstates.net/cgi-bin/api.cgi?q=happenings;filter=change;limit=5");
                     XDocument xmlDoc = XDocument.Parse(xmlSrc); //Parsing.
