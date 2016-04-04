@@ -255,8 +255,9 @@ namespace GoldenTubes
                             UpdateLength[(DateTime.Now.Hour >= 12) ? 1 : 0] = (int)(nationList.Count * TimePerNation);
                         else
                         {
-                            UpdateLength[0] = 5400;
-                            UpdateLength[1] = 3600;
+                            UpdateLength = new List<int>();
+                            UpdateLength.Add(5400);
+                            UpdateLength.Add(3600);
                         }
 
                         //We now calculate what time the CTE'd nation should be updating at given the data we've collected
@@ -266,8 +267,9 @@ namespace GoldenTubes
                     {
                         if (UpdateLength.Count == 0) //You can never error check enough.
                         {
-                            UpdateLength[0] = 5400;
-                            UpdateLength[1] = 3600;
+                            UpdateLength = new List<int>();
+                            UpdateLength.Add(5400);
+                            UpdateLength.Add(3600);
                         }
                         //We need this so that our program doesn't get dicked on if someone creates a nation like 'fuckshitpiss' and it get's CTE'd
                         //TimePerNation = UpdateLength/NumberOfNations
