@@ -193,10 +193,16 @@ namespace GoldenTubes
         private void ThreadUClock()
         {
             TimeSpan TodayStamp; //Timestamp of the current date at the Major/Minor update
-            if (DateTime.Now.Hour >= 12)
-                TodayStamp = ((new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 16, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
+            TimeZoneInfo TZInfo;
+
+            TZInfo = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+
+            DateTime ESTNow = TimeZoneInfo.ConvertTime(DateTime.Now, TZInfo);
+
+            if (ESTNow.Hour >= 12)
+                TodayStamp = ((new DateTime(ESTNow.Year, ESTNow.Month, ESTNow.Day, 16, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
             else
-                TodayStamp = ((new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 4, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
+                TodayStamp = ((new DateTime(ESTNow.Year, ESTNow.Month, ESTNow.Day, 4, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
 
             while (running) //DO THIS SHIT UNTIL I TELL YOU TO STOP
             {
@@ -252,7 +258,7 @@ namespace GoldenTubes
 
                         //Use the time per nation to extrapolate how long the update length is (We use this outside of the update)
                         if (UpdateLength.Count != 0)
-                            UpdateLength[(DateTime.Now.Hour >= 12) ? 1 : 0] = (int)(nationList.Count * TimePerNation);
+                            UpdateLength[(ESTNow.Hour >= 12) ? 1 : 0] = (int)(nationList.Count * TimePerNation);
                         else
                         {
                             UpdateLength = new List<int>();
@@ -273,7 +279,7 @@ namespace GoldenTubes
                         }
                         //We need this so that our program doesn't get dicked on if someone creates a nation like 'fuckshitpiss' and it get's CTE'd
                         //TimePerNation = UpdateLength/NumberOfNations
-                        TimePerNation = (double)UpdateLength[(DateTime.Now.Hour >= 12) ? 1 : 0] / (double)nationList.Count;
+                        TimePerNation = (double)UpdateLength[(ESTNow.Hour >= 12) ? 1 : 0] / (double)nationList.Count;
                         //We don't actually have any data, so we'll just calculate how many seconds into the update the CTE happened.
                         NationTime = NationStamp - TodayStamp.TotalSeconds;
                     }
@@ -365,8 +371,9 @@ namespace GoldenTubes
         {
             while(running) //You get the fucking idea.
             {
-                //UpdateTime(t.ToString(@"hh\:mm\:ss").ToString());
-                Updateshit(DateTime.Now.ToString(@"hh\:mm\:ss"));
+                TimeZoneInfo TZInfo = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                DateTime ESTNow = TimeZoneInfo.ConvertTime(DateTime.Now, TZInfo);
+                Updateshit(ESTNow.ToString(@"hh\:mm\:ss"));
             }
         }
 
