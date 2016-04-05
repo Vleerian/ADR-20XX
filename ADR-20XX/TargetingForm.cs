@@ -193,14 +193,10 @@ namespace GoldenTubes
         private void ThreadUClock()
         {
             TimeSpan TodayStamp; //Timestamp of the current date at the Major/Minor update
-
-            DateTime localToEST = DateTime.Now.ToUniversalTime();
-            localToEST.AddHours(-5);
-
-            if (localToEST.Hour >= 12)
-                TodayStamp = ((new DateTime(localToEST.Year, localToEST.Month, localToEST.Day, 16, 0, 0).ToUniversalTime()) - (new DateTime(1970, 1, 1, 0, 0, 0)).ToUniversalTime());
+            if (DateTime.Now.Hour >= 12)
+                TodayStamp = ((new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 16, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
             else
-                TodayStamp = ((new DateTime(localToEST.Year, localToEST.Month, localToEST.Day, 4, 0, 0).ToUniversalTime()) - (new DateTime(1970, 1, 1, 0, 0, 0)).ToUniversalTime());
+                TodayStamp = ((new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 4, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
 
             while (running) //DO THIS SHIT UNTIL I TELL YOU TO STOP
             {
@@ -233,8 +229,6 @@ namespace GoldenTubes
                     if (EventWeCareAbout != null)
                     {
                         NationStamp = Convert.ToInt64(EventWeCareAbout.Element("TIMESTAMP").Value); //Parsing
-                        TimeSpan tmp =(new DateTime(1970, 1, 1, 0, 0, 0, 0)) - (new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(Math.Round(NationStamp / 1000d)));
-                        NationStamp = tmp.TotalSeconds;
                         Console.Write(NationStamp);
                     }
                     else if (NationStamp == 0)
@@ -258,7 +252,7 @@ namespace GoldenTubes
 
                         //Use the time per nation to extrapolate how long the update length is (We use this outside of the update)
                         if (UpdateLength.Count != 0)
-                            UpdateLength[(localToEST.Hour >= 16) ? 1 : 0] = (int)(nationList.Count * TimePerNation);
+                            UpdateLength[(DateTime.Now.Hour >= 12) ? 1 : 0] = (int)(nationList.Count * TimePerNation);
                         else
                         {
                             UpdateLength = new List<int>();
@@ -279,7 +273,7 @@ namespace GoldenTubes
                         }
                         //We need this so that our program doesn't get dicked on if someone creates a nation like 'fuckshitpiss' and it get's CTE'd
                         //TimePerNation = UpdateLength/NumberOfNations
-                        TimePerNation = (double)UpdateLength[(localToEST.ToUniversalTime().Hour >= 16) ? 1 : 0] / (double)nationList.Count;
+                        TimePerNation = (double)UpdateLength[(DateTime.Now.Hour >= 12) ? 1 : 0] / (double)nationList.Count;
                         //We don't actually have any data, so we'll just calculate how many seconds into the update the CTE happened.
                         NationTime = NationStamp - TodayStamp.TotalSeconds;
                     }
@@ -372,9 +366,7 @@ namespace GoldenTubes
             while(running) //You get the fucking idea.
             {
                 //UpdateTime(t.ToString(@"hh\:mm\:ss").ToString());
-                DateTime localToEST = DateTime.Now.ToUniversalTime();
-                localToEST.AddHours(-5);
-                Updateshit(localToEST.ToString(@"hh\:mm\:ss"));
+                Updateshit(DateTime.Now.ToString(@"hh\:mm\:ss"));
             }
         }
 
