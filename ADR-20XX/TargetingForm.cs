@@ -164,6 +164,9 @@ namespace GoldenTubes
                 tmp.Add("Index", counter.ToString()); //Add an index attribute (useful in conjunction with the region list)
                 tmp.Add("NumNations", Region.Element("NUMNATIONS").Value); //Add an attribute for the number of nations in the region
                 tmp.Add("FirstNation", Region.Element("NATIONS").ToString().Replace("<NATIONS>", "").Replace("</NATIONS>", "").Split(':')[0]); //Firstnation is the first updating nation in the region
+                tmp.Add("Founder", Region.Element("FOUNDER").Value); //Add an attribute for the founder of the region
+                tmp.Add("Delegate", Region.Element("DELEGATE").Value); //Add an attribute for the delegate of the region
+                tmp.Add("DelegateVotes", Region.Element("DELEGATEVOTES").Value); //Add an attribute for the delegate of the region
                 foreach (string Nation in Region.Element("NATIONS").ToString().Replace("<NATIONS>", "").Replace("</NATIONS>", "").Split(':'))
                 {
                     nationcounter++;
