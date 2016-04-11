@@ -232,13 +232,11 @@ namespace GoldenTubes
                             EventWeCareAbout = Event;
                         }
                         NationStamp = Convert.ToInt64(Event.Element("TIMESTAMP").Value); //Parsing
-                                                                                         //Console.Write(Event.Element("TEXT").Value);
                     }
 
                     if (EventWeCareAbout != null)
                     {
                         NationStamp = Convert.ToInt64(EventWeCareAbout.Element("TIMESTAMP").Value); //Parsing
-                        Console.Write(NationStamp);
                     }
                     else if (NationStamp == 0)
                     {
@@ -287,14 +285,10 @@ namespace GoldenTubes
                         NationTime = NationStamp - TodayStamp.TotalSeconds;
                     }
 
-                    Console.Write(NationTime.ToString() + " " + TimePerNation.ToString() + "\n");
-
                     //Our estimate - UpdateStartTime + Seconds into the update we believe the CTE'd nation should be updating
                     double Estimate = TodayStamp.TotalSeconds + NationTime;
                     //Variance = Actual - Estimate. We compare the time the nation actually updates compared to our estimate
                     double Variance = NationStamp - Estimate;
-
-                    Console.Write(Estimate.ToString() + " " + Variance.ToString() + "\n");
 
                     if (Target.Trim() != "" && regionList.Contains(Target.ToLower().Replace(' ', '_'))) //If we have a target
                     {
@@ -316,7 +310,6 @@ namespace GoldenTubes
                 }
                 catch(WebException e)
                 {
-                    Console.Write(e.Data.ToString());
                     Thread.Sleep(10000);
                 }
             }
