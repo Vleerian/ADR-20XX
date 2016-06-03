@@ -51,7 +51,7 @@ namespace GoldenTubes
             }
             catch
             {
-                //If it fails, it will notify the user that no JSON data was found, and will instantiate al lthe variables.
+                //If it fails, it will notify the user that no JSON data was found, and will instantiate all the variables.
                 MessageBox.Show("No JSON data found. Updating, please wait...", "Notice");
                 regionDict = new Dictionary<string, Dictionary<string, string>>();
                 regionList = new List<string>();
@@ -198,17 +198,17 @@ namespace GoldenTubes
             TimeSpan TodayStamp; //Timestamp of the current date at the Major/Minor update
             TimeZoneInfo TZInfo;
 
-            TZInfo = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-
-            DateTime ESTNow = TimeZoneInfo.ConvertTime(DateTime.Now, TZInfo);
-
-            if (ESTNow.Hour >= 12)
-                TodayStamp = ((new DateTime(ESTNow.Year, ESTNow.Month, ESTNow.Day, 16, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
-            else
-                TodayStamp = ((new DateTime(ESTNow.Year, ESTNow.Month, ESTNow.Day, 4, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
-
             while (running) //DO THIS SHIT UNTIL I TELL YOU TO STOP
             {
+                TZInfo = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+
+                DateTime ESTNow = TimeZoneInfo.ConvertTime(DateTime.Now, TZInfo);
+
+                if (ESTNow.Hour >= 12)
+                    TodayStamp = ((new DateTime(ESTNow.Year, ESTNow.Month, ESTNow.Day, 16, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
+                else
+                    TodayStamp = ((new DateTime(ESTNow.Year, ESTNow.Month, ESTNow.Day, 4, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
+
                 if (!UpdateTheTime || User.Trim() == "") //This is so the user can tell it to stop updating the time.
                 {
                     Thread.Sleep(500); //This is here so that we don't keep running through a continue command every 1000th of a second.
