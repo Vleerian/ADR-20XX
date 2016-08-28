@@ -40,17 +40,17 @@
             // 
             // TargetButton
             // 
-            this.TargetButton.Location = new System.Drawing.Point(12, 49);
+            this.TargetButton.Location = new System.Drawing.Point(12, 82);
             this.TargetButton.Name = "TargetButton";
             this.TargetButton.Size = new System.Drawing.Size(75, 23);
             this.TargetButton.TabIndex = 0;
-            this.TargetButton.Text = "Get Target";
+            this.TargetButton.Text = "Lock On";
             this.TargetButton.UseVisualStyleBackColor = true;
             this.TargetButton.Click += new System.EventHandler(this.TargetButton_Click);
             // 
             // TargetName
             // 
-            this.TargetName.Location = new System.Drawing.Point(93, 52);
+            this.TargetName.Location = new System.Drawing.Point(93, 85);
             this.TargetName.Name = "TargetName";
             this.TargetName.Size = new System.Drawing.Size(179, 20);
             this.TargetName.TabIndex = 1;
@@ -58,7 +58,7 @@
             // EstimateTime
             // 
             this.EstimateTime.AutoSize = true;
-            this.EstimateTime.Location = new System.Drawing.Point(51, 34);
+            this.EstimateTime.Location = new System.Drawing.Point(12, 34);
             this.EstimateTime.Name = "EstimateTime";
             this.EstimateTime.Size = new System.Drawing.Size(49, 13);
             this.EstimateTime.TabIndex = 2;
@@ -67,7 +67,7 @@
             // CurrentTime
             // 
             this.CurrentTime.AutoSize = true;
-            this.CurrentTime.Location = new System.Drawing.Point(176, 34);
+            this.CurrentTime.Location = new System.Drawing.Point(223, 34);
             this.CurrentTime.Name = "CurrentTime";
             this.CurrentTime.Size = new System.Drawing.Size(49, 13);
             this.CurrentTime.TabIndex = 3;
@@ -77,26 +77,27 @@
             // 
             this.UserName.Location = new System.Drawing.Point(104, 6);
             this.UserName.Name = "UserName";
-            this.UserName.Size = new System.Drawing.Size(165, 20);
+            this.UserName.Size = new System.Drawing.Size(168, 20);
             this.UserName.TabIndex = 4;
             this.UserName.TextChanged += new System.EventHandler(this.UserName_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.SystemColors.Control;
             this.label1.Location = new System.Drawing.Point(9, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 13);
+            this.label1.Size = new System.Drawing.Size(78, 13);
             this.label1.TabIndex = 5;
-            this.label1.Text = "Your Main Nation";
+            this.label1.Text = "Arwing Callsign";
             // 
             // StopButton
             // 
-            this.StopButton.Location = new System.Drawing.Point(12, 75);
+            this.StopButton.Location = new System.Drawing.Point(12, 111);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(260, 23);
             this.StopButton.TabIndex = 6;
-            this.StopButton.Text = "Stop Updating";
+            this.StopButton.Text = "Disengage Engines";
             this.StopButton.UseVisualStyleBackColor = true;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
@@ -104,7 +105,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 100);
+            this.BackgroundImage = global::GoldenTubes.Properties.Resources._20XXBackground;
+            this.ClientSize = new System.Drawing.Size(284, 137);
             this.Controls.Add(this.StopButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.UserName);

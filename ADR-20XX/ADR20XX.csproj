@@ -101,6 +101,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="TargetingForm.resx">
       <DependentUpon>TargetingForm.cs</DependentUpon>
@@ -123,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="20xxICON.ico" />
+    <None Include="Resources\20XXBackground.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

@@ -24,6 +24,7 @@ namespace GoldenTubes
         private List<string> regionList;
         private Dictionary<string, Dictionary<string, string>> nationDict;
         private List<string> nationList;
+        private Dictionary<string, Dictionary<string, string>> raidableDict;
         private List<int>UpdateLength;
         string YearMonthDay = "";
         string Target = "";
@@ -47,6 +48,7 @@ namespace GoldenTubes
                 regionList = getJSONData<List<string>>(YearMonthDay + "RList.JSON");
                 nationDict = getJSONData<Dictionary<string, Dictionary<string, string>>>(YearMonthDay + "NDict.JSON");
                 nationList = getJSONData<List<string>>(YearMonthDay + "NList.JSON");
+                raidableDict = getJSONData<Dictionary<string, Dictionary<string, string>>>(YearMonthDay + "TDict.JSON");
                 UpdateLength = getJSONData<List<int>>("UpdateLength.JSON");
             }
             catch
@@ -57,6 +59,7 @@ namespace GoldenTubes
                 regionList = new List<string>();
                 nationDict = new Dictionary<string, Dictionary<string, string>>();
                 nationList = new List<string>();
+                raidableDict = new Dictionary<string, Dictionary<string, string>>();
                 UpdateLength = new List<int>();
                 //It will then update the data
                 updateData();
@@ -150,6 +153,38 @@ namespace GoldenTubes
 
             }
 
+            List<string> passwordList = new List<string>();
+            List<string> founderlessList = new List<string>();
+
+            client.Headers.Add("user-agent", "ALL HAIL 20XX. Startup request to get passworded regions. Main Dev - doomjaw@hotmail.com");
+            string xmlSrc = client.DownloadString("https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=password");
+            List<string> pw = new List<string>();
+            foreach (string i in xmlSrc.Replace("<WORLD><REGIONS", "").Replace("</WORLD></REGIONS>", "").Split(',').ToList<string>())
+            {
+                pw.Add(i.ToLower().Replace(' ', '_'));
+            }
+            foreach (string i in regionList)
+            {
+                if (!pw.Contains(i.ToLower().Replace(' ', '_')))
+                {
+                    passwordList.Add(i.ToLower().Replace(' ', '_'));
+                }
+            }
+            client.Headers.Add("user-agent", "ALL HAIL 20XX. Startup request to get passworded regions. Main Dev - doomjaw@hotmail.com");
+            xmlSrc = client.DownloadString("https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=founderless");
+            pw = new List<string>();
+            foreach (string i in xmlSrc.Replace("<WORLD><REGIONS", "").Replace("</WORLD></REGIONS>", "").Split(',').ToList<string>())
+            {
+                pw.Add(i.ToLower().Replace(' ', '_'));
+            }
+            foreach (string i in regionList)
+            {
+                if (!pw.Contains(i.ToLower().Replace(' ', '_')))
+                {
+                    founderlessList.Add(i.ToLower().Replace(' ', '_'));
+                }
+            }
+
             //Parse the XML string from the data dump into the LINQ XDocument object
             XDocument xmlDoc = XDocument.Parse(text);
             //How many regions we've iterated through
@@ -160,13 +195,22 @@ namespace GoldenTubes
             {
                 counter++;
                 Dictionary<string, string> tmp = new Dictionary<string, string>(); //Create a dictionary that will store region data
-                tmp.Add("Name", Region.Element("NAME").Value); //Add a name attribute
+                string name = Region.Element("NAME").Value;
+                tmp.Add("Name", name); //Add a name attribute
                 tmp.Add("Index", counter.ToString()); //Add an index attribute (useful in conjunction with the region list)
                 tmp.Add("NumNations", Region.Element("NUMNATIONS").Value); //Add an attribute for the number of nations in the region
                 tmp.Add("FirstNation", Region.Element("NATIONS").ToString().Replace("<NATIONS>", "").Replace("</NATIONS>", "").Split(':')[0]); //Firstnation is the first updating nation in the region
-                tmp.Add("Founder", Region.Element("FOUNDER").Value); //Add an attribute for the founder of the region
+                string founder = "False";
+                if (founderlessList.Contains(name.ToLower().Replace(' ', '_')))
+                    founder = "True";
+                tmp.Add("Foundered", founder); //Add an attribute for the founder of the region
+                string password = "False";
+                if (passwordList.Contains(name.ToLower().Replace(' ', '_')))
+                    password = "True";
+                tmp.Add("Passworded", password);
                 tmp.Add("Delegate", Region.Element("DELEGATE").Value); //Add an attribute for the delegate of the region
                 tmp.Add("DelegateVotes", Region.Element("DELEGATEVOTES").Value); //Add an attribute for the delegate of the region
+                tmp.Add("DelegateAuth", Region.Element("DELEGATEAUTH").Value); //CHECKMATE, [VIOLET]
                 foreach (string Nation in Region.Element("NATIONS").ToString().Replace("<NATIONS>", "").Replace("</NATIONS>", "").Split(':'))
                 {
                     nationcounter++;
@@ -174,6 +218,7 @@ namespace GoldenTubes
                     Dictionary<string, string> tmp2 = new Dictionary<string, string>(); //Create a dictionary that will store nation data
                     tmp2.Add("Name", Nation); //Name Attribute
                     tmp2.Add("Index", nationcounter.ToString()); //Index attribute (Equivalent to #of nations before it)
+                    tmp2.Add("Region", name);
                     if (Nation == tmp["FirstNation"])
                         tmp.Add("FirstNationIndex", nationcounter.ToString()); //If it's the first nation in the region, store it's index in the region.
                     if (Nation.Trim() != "" && !nationDict.ContainsKey(Nation.ToLower().Replace(' ', '_')))
@@ -183,13 +228,22 @@ namespace GoldenTubes
                     regionDict.Add(Region.Element("NAME").Value.ToLower().Replace(' ', '_'), tmp); //If it doesn't exist in the regiondict, add that shit
                 if (!regionList.Contains(Region.Element("NAME").Value.ToLower().Replace(' ', '_')))
                     regionList.Add(Region.Element("NAME").Value.ToLower().Replace(' ', '_')); //If it doens't exist in the list add that shit.
+                if (regionDict[name.ToLower().Replace(' ', '_')]["Foundered"] == "False" &&
+                    regionDict[name.ToLower().Replace(' ', '_')]["Passworded"] == "False" &&
+                    regionDict[name.ToLower().Replace(' ', '_')]["DelegateAuth"].Contains("X"))
+                {
+                    raidableDict.Add(Region.Element("NAME").Value.ToLower().Replace(' ', '_'), tmp);
+                }
             }
+
+
 
             //Finally, save al lof them into JSON format files
             saveJSONData(JsonConvert.SerializeObject(regionDict), YearMonthDay + "RDict.JSON");
             saveJSONData(JsonConvert.SerializeObject(regionList), YearMonthDay + "RList.JSON");
             saveJSONData(JsonConvert.SerializeObject(nationDict), YearMonthDay + "NDict.JSON");
             saveJSONData(JsonConvert.SerializeObject(nationList), YearMonthDay + "NList.JSON");
+            saveJSONData(JsonConvert.SerializeObject(nationDict), YearMonthDay + "TDict.JSON");
         }
 
         //A function for use with threads :DDDDDDDDDDDDDDDDDD
@@ -308,7 +362,7 @@ namespace GoldenTubes
 
                     //No matter what happens, sleep 5 seconds because I'M A GOOD BOY VIOLET
                 }
-                catch(WebException e)
+                catch(WebException)
                 {
                     Thread.Sleep(10000);
                 }
@@ -382,12 +436,12 @@ namespace GoldenTubes
         {
             if(UpdateTheTime)
             {
-                StopButton.Text = "Continue Updating";
+                StopButton.Text = "Engage Engine";
                 UpdateTheTime = false;
             }
             else
             {
-                StopButton.Text = "Stop Updating";
+                StopButton.Text = "Disengage Engines";
                 UpdateTheTime = true;
             }
         }
