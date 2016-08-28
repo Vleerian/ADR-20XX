@@ -159,30 +159,16 @@ namespace GoldenTubes
             client.Headers.Add("user-agent", "ALL HAIL 20XX. Startup request to get passworded regions. Main Dev - doomjaw@hotmail.com");
             string xmlSrc = client.DownloadString("https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=password");
             List<string> pw = new List<string>();
-            foreach (string i in xmlSrc.Replace("<WORLD><REGIONS", "").Replace("</WORLD></REGIONS>", "").Split(',').ToList<string>())
+            foreach (string i in xmlSrc.Replace("<WORLD><REGIONS>", "").Replace("</WORLD></REGIONS>", "").Split(',').ToList<string>())
             {
-                pw.Add(i.ToLower().Replace(' ', '_'));
+                passwordList.Add(i.ToLower().Replace(' ', '_'));
             }
-            foreach (string i in regionList)
-            {
-                if (!pw.Contains(i.ToLower().Replace(' ', '_')))
-                {
-                    passwordList.Add(i.ToLower().Replace(' ', '_'));
-                }
-            }
-            client.Headers.Add("user-agent", "ALL HAIL 20XX. Startup request to get passworded regions. Main Dev - doomjaw@hotmail.com");
+            client.Headers.Add("user-agent", "ALL HAIL 20XX. Startup request to get founderless regions. Main Dev - doomjaw@hotmail.com");
             xmlSrc = client.DownloadString("https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=founderless");
             pw = new List<string>();
-            foreach (string i in xmlSrc.Replace("<WORLD><REGIONS", "").Replace("</WORLD></REGIONS>", "").Split(',').ToList<string>())
+            foreach (string i in xmlSrc.Replace("<WORLD><REGIONS>", "").Replace("</WORLD></REGIONS>", "").Split(',').ToList<string>())
             {
-                pw.Add(i.ToLower().Replace(' ', '_'));
-            }
-            foreach (string i in regionList)
-            {
-                if (!pw.Contains(i.ToLower().Replace(' ', '_')))
-                {
-                    founderlessList.Add(i.ToLower().Replace(' ', '_'));
-                }
+                founderlessList.Add(i.ToLower().Replace(' ', '_'));
             }
 
             //Parse the XML string from the data dump into the LINQ XDocument object
@@ -200,14 +186,14 @@ namespace GoldenTubes
                 tmp.Add("Index", counter.ToString()); //Add an index attribute (useful in conjunction with the region list)
                 tmp.Add("NumNations", Region.Element("NUMNATIONS").Value); //Add an attribute for the number of nations in the region
                 tmp.Add("FirstNation", Region.Element("NATIONS").ToString().Replace("<NATIONS>", "").Replace("</NATIONS>", "").Split(':')[0]); //Firstnation is the first updating nation in the region
-                string founder = "False";
+                string founder = "True";
                 if (founderlessList.Contains(name.ToLower().Replace(' ', '_')))
-                    founder = "True";
+                    founder = "False";
                 tmp.Add("Foundered", founder); //Add an attribute for the founder of the region
                 string password = "False";
                 if (passwordList.Contains(name.ToLower().Replace(' ', '_')))
                     password = "True";
-                tmp.Add("Passworded", password);
+                tmp.Add("Passworded", password); //Passworded shit
                 tmp.Add("Delegate", Region.Element("DELEGATE").Value); //Add an attribute for the delegate of the region
                 tmp.Add("DelegateVotes", Region.Element("DELEGATEVOTES").Value); //Add an attribute for the delegate of the region
                 tmp.Add("DelegateAuth", Region.Element("DELEGATEAUTH").Value); //CHECKMATE, [VIOLET]
@@ -228,7 +214,7 @@ namespace GoldenTubes
                     regionDict.Add(Region.Element("NAME").Value.ToLower().Replace(' ', '_'), tmp); //If it doesn't exist in the regiondict, add that shit
                 if (!regionList.Contains(Region.Element("NAME").Value.ToLower().Replace(' ', '_')))
                     regionList.Add(Region.Element("NAME").Value.ToLower().Replace(' ', '_')); //If it doens't exist in the list add that shit.
-                if (regionDict[name.ToLower().Replace(' ', '_')]["Foundered"] == "False" &&
+                if (regionDict[name.ToLower().Replace(' ', '_')]["Foundered"] == "True" &&
                     regionDict[name.ToLower().Replace(' ', '_')]["Passworded"] == "False" &&
                     regionDict[name.ToLower().Replace(' ', '_')]["DelegateAuth"].Contains("X"))
                 {
@@ -243,7 +229,7 @@ namespace GoldenTubes
             saveJSONData(JsonConvert.SerializeObject(regionList), YearMonthDay + "RList.JSON");
             saveJSONData(JsonConvert.SerializeObject(nationDict), YearMonthDay + "NDict.JSON");
             saveJSONData(JsonConvert.SerializeObject(nationList), YearMonthDay + "NList.JSON");
-            saveJSONData(JsonConvert.SerializeObject(nationDict), YearMonthDay + "TDict.JSON");
+            saveJSONData(JsonConvert.SerializeObject(raidableDict), YearMonthDay + "TDict.JSON");
         }
 
         //A function for use with threads :DDDDDDDDDDDDDDDDDD
