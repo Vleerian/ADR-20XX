@@ -36,11 +36,13 @@
             this.UserName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.StopButton = new System.Windows.Forms.Button();
+            this.ManualRegion = new System.Windows.Forms.Label();
+            this.TriggerTime = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // TargetButton
             // 
-            this.TargetButton.Location = new System.Drawing.Point(12, 82);
+            this.TargetButton.Location = new System.Drawing.Point(12, 50);
             this.TargetButton.Name = "TargetButton";
             this.TargetButton.Size = new System.Drawing.Size(75, 23);
             this.TargetButton.TabIndex = 0;
@@ -50,7 +52,7 @@
             // 
             // TargetName
             // 
-            this.TargetName.Location = new System.Drawing.Point(93, 85);
+            this.TargetName.Location = new System.Drawing.Point(93, 50);
             this.TargetName.Name = "TargetName";
             this.TargetName.Size = new System.Drawing.Size(179, 20);
             this.TargetName.TabIndex = 1;
@@ -101,12 +103,33 @@
             this.StopButton.UseVisualStyleBackColor = true;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
+            // ManualRegion
+            // 
+            this.ManualRegion.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ManualRegion.AutoSize = true;
+            this.ManualRegion.Location = new System.Drawing.Point(59, 88);
+            this.ManualRegion.Name = "ManualRegion";
+            this.ManualRegion.Size = new System.Drawing.Size(115, 13);
+            this.ManualRegion.TabIndex = 7;
+            this.ManualRegion.Text = "Manual Trigger Region";
+            this.ManualRegion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // TriggerTime
+            // 
+            this.TriggerTime.Location = new System.Drawing.Point(12, 85);
+            this.TriggerTime.Name = "TriggerTime";
+            this.TriggerTime.Size = new System.Drawing.Size(41, 20);
+            this.TriggerTime.TabIndex = 8;
+            this.TriggerTime.Text = "0";
+            // 
             // TargetingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::GoldenTubes.Properties.Resources._20XXBackground;
             this.ClientSize = new System.Drawing.Size(284, 137);
+            this.Controls.Add(this.TriggerTime);
+            this.Controls.Add(this.ManualRegion);
             this.Controls.Add(this.StopButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.UserName);
@@ -132,5 +155,7 @@
         private System.Windows.Forms.TextBox UserName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button StopButton;
+        private System.Windows.Forms.Label ManualRegion;
+        private System.Windows.Forms.TextBox TriggerTime;
     }
 }

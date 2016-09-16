@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ADR-20XX.exe" size="859160">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ADR-20XX.exe" size="860184">
       <assemblyIdentity name="ADR-20XX" version="1.0.0.0" publicKeyToken="095EFAB2773D4E9C" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>3ggUjhx9wKsdkqwG4zmxAVs1HNiV9Ft/0kjPvmMoq60=</dsig:DigestValue>
+        <dsig:DigestValue>4YIYOnn7JHXLd+CRln2t761+0m5QKu3TFe8rmxx0maQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

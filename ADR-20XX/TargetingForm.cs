@@ -81,6 +81,12 @@ namespace GoldenTubes
             if(TargetName.Text.Trim() != "")
             {
                 Target = TargetName.Text;
+                string First = regionDict[Target.ToLower().Replace(' ', '_')]["FirstNation"];
+                int index = Convert.ToInt32(nationDict[First]["Index"]);
+                string region = nationList[Convert.ToInt32(Math.Round((((index * 0.04) - Convert.ToInt32(TriggerTime.Text)) / 0.04)))];
+                region = nationDict[region]["Region"];
+                ManualRegion.Text = region;
+
             }
             else
             {
@@ -158,18 +164,12 @@ namespace GoldenTubes
 
             client.Headers.Add("user-agent", "ALL HAIL 20XX. Startup request to get passworded regions. Main Dev - doomjaw@hotmail.com");
             string xmlSrc = client.DownloadString("https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=password");
-            List<string> pw = new List<string>();
             foreach (string i in xmlSrc.Replace("<WORLD><REGIONS>", "").Replace("</WORLD></REGIONS>", "").Split(',').ToList<string>())
-            {
                 passwordList.Add(i.ToLower().Replace(' ', '_'));
-            }
             client.Headers.Add("user-agent", "ALL HAIL 20XX. Startup request to get founderless regions. Main Dev - doomjaw@hotmail.com");
             xmlSrc = client.DownloadString("https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=founderless");
-            pw = new List<string>();
             foreach (string i in xmlSrc.Replace("<WORLD><REGIONS>", "").Replace("</WORLD></REGIONS>", "").Split(',').ToList<string>())
-            {
                 founderlessList.Add(i.ToLower().Replace(' ', '_'));
-            }
 
             //Parse the XML string from the data dump into the LINQ XDocument object
             XDocument xmlDoc = XDocument.Parse(text);
@@ -214,9 +214,9 @@ namespace GoldenTubes
                     regionDict.Add(Region.Element("NAME").Value.ToLower().Replace(' ', '_'), tmp); //If it doesn't exist in the regiondict, add that shit
                 if (!regionList.Contains(Region.Element("NAME").Value.ToLower().Replace(' ', '_')))
                     regionList.Add(Region.Element("NAME").Value.ToLower().Replace(' ', '_')); //If it doens't exist in the list add that shit.
-                if (regionDict[name.ToLower().Replace(' ', '_')]["Foundered"] == "True" &&
-                    regionDict[name.ToLower().Replace(' ', '_')]["Passworded"] == "False" &&
-                    regionDict[name.ToLower().Replace(' ', '_')]["DelegateAuth"].Contains("X"))
+                if ((regionDict[name.ToLower().Replace(' ', '_')]["Foundered"] == "False" ||
+                    regionDict[name.ToLower().Replace(' ', '_')]["DelegateAuth"].Contains("X")) &&
+                    regionDict[name.ToLower().Replace(' ', '_')]["Passworded"] == "False")
                 {
                     raidableDict.Add(Region.Element("NAME").Value.ToLower().Replace(' ', '_'), tmp);
                 }
