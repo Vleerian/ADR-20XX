@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,10 +63,10 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ADR20XXHailTheKing.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ADR-20XX.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -106,6 +106,7 @@
     <EmbeddedResource Include="TargetingForm.resx">
       <DependentUpon>TargetingForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="ADR-20XX.snk" />
     <None Include="ADR20XXHailTheKing.pfx" />
     <None Include="ADR20XX_TemporaryKey.pfx" />
     <None Include="packages.config" />
