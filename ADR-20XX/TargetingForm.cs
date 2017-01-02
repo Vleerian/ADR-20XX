@@ -242,14 +242,19 @@ namespace GoldenTubes
             {
                 TZInfo = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
-                DateTime ESTNow = TimeZoneInfo.ConvertTime(DateTime.Now, TZInfo);
+				DateTime ESTNow = TimeZoneInfo.ConvertTime(DateTime.Now, TZInfo);
 
-                if (ESTNow.Hour >= 12)
-                    TodayStamp = ((new DateTime(ESTNow.Year, ESTNow.Month, ESTNow.Day, 16, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
-                else
-                    TodayStamp = ((new DateTime(ESTNow.Year, ESTNow.Month, ESTNow.Day, 4, 0, 0, DateTimeKind.Utc)) - (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)));
+				DateTime UpdateStart = ESTNow;
+				UpdateStart = UpdateStart.AddSeconds(-UpdateStart.Second);
+				UpdateStart = UpdateStart.AddMinutes(-UpdateStart.Minute);
+				if (UpdateStart.Hour >= 12)
+					UpdateStart = UpdateStart.AddHours(12 - UpdateStart.Hour);
+				else
+					UpdateStart = UpdateStart.AddHours(-UpdateStart.Hour);
 
-                if (!UpdateTheTime || User.Trim() == "") //This is so the user can tell it to stop updating the time.
+				TodayStamp = TimeZoneInfo.ConvertTimeToUtc(UpdateStart, TZInfo) - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+				if (!UpdateTheTime || User.Trim() == "") //This is so the user can tell it to stop updating the time.
                 {
                     Thread.Sleep(500); //This is here so that we don't keep running through a continue command every 1000th of a second.
                     continue;
@@ -260,19 +265,23 @@ namespace GoldenTubes
                 {
                     //I SWEAR VIOLET, I'LL BE A GOOD BOY
                     client.Headers.Add("user-agent", "ALL HAIL 20XX. Currently in use by " + User + ". Main Dev - doomjaw@hotmail.com");
-                    //Grab the latest changes like they're juicy dicks
-                    string xmlSrc = client.DownloadString("http://www.nationstates.net/cgi-bin/api.cgi?q=happenings;filter=change;limit=5");
-                    XDocument xmlDoc = XDocument.Parse(xmlSrc); //Parsing.
+					//Grab the latest changes like they're juicy dicks
+					string xmlSrc = client.DownloadString("https://www.nationstates.net/cgi-bin/api.cgi?q=happenings;filter=change;limit=5");
+					XDocument xmlDoc = XDocument.Parse(xmlSrc); //Parsing.
                     double NationStamp = 0;
                     XElement EventWeCareAbout = null; //Self documenting!
-                    foreach (XElement Event in xmlDoc.Root.Element("HAPPENINGS").Elements())
-                    {
-                        if (Event.Element("TEXT").Value.Contains("influence in") || Event.Element("TEXT").Value.Contains("was ranked in the"))
-                        {
-                            EventWeCareAbout = Event;
-                        }
-                        NationStamp = Convert.ToInt64(Event.Element("TIMESTAMP").Value); //Parsing
-                    }
+					var elmHappenings = xmlDoc.Root.Element("HAPPENINGS");
+					if (elmHappenings != null)
+					{
+						foreach (XElement Event in elmHappenings.Elements())
+						{
+							if (Event.Element("TEXT").Value.Contains("influence in") || Event.Element("TEXT").Value.Contains("was ranked in the"))
+							{
+								EventWeCareAbout = Event;
+							}
+							NationStamp = Convert.ToInt64(Event.Element("TIMESTAMP").Value); //Parsing				
+						}
+					}
 
                     if (EventWeCareAbout != null)
                     {
