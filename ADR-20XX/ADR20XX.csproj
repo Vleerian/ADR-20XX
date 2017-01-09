@@ -67,7 +67,8 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ADR-20XX.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -107,7 +108,6 @@
     <EmbeddedResource Include="TargetingForm.resx">
       <DependentUpon>TargetingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="ADR-20XX.snk" />
     <None Include="ADR20XXHailTheKing.pfx" />
     <None Include="ADR20XX_TemporaryKey.pfx" />
     <None Include="packages.config" />
