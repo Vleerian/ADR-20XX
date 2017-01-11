@@ -30,12 +30,13 @@ namespace GoldenTubes
         string Target = "";
         bool running = false;
         Thread upThread;
-        Thread elThread;
         string User = "";
         bool UpdateTheTime = true;
-        //============================================================//
+		private System.Windows.Forms.Timer m_timerUpdateElements = null;
+		private DateTime m_LastClockTime = DateTime.MinValue;
+		//============================================================//
 
-        public TargetingForm()
+		public TargetingForm()
         {
             InitializeComponent();
 
@@ -71,12 +72,13 @@ namespace GoldenTubes
             upThread.Start();
             while (!upThread.IsAlive) ; //Waits for the thread to begin
 
-            elThread = new Thread(UpdateElements);
-            elThread.Start();
-            while (!elThread.IsAlive) ; //HURRY UP, GOD.
+			m_timerUpdateElements = new System.Windows.Forms.Timer();
+			m_timerUpdateElements.Tick += UpdateElements;
+			UpdateElements(null, null);
+			m_timerUpdateElements.Start();
         }
 
-        private void TargetButton_Click(object sender, EventArgs e)
+		private void TargetButton_Click(object sender, EventArgs e)
         {
             if(TargetName.Text.Trim() != "")
             {
@@ -103,8 +105,8 @@ namespace GoldenTubes
             return returnData;
         }
 
-        //Helper function for saving JSON data files
-        private void saveJSONData(string data, string fileName)
+		//Helper function for saving JSON data files
+		private void saveJSONData(string data, string fileName)
         {
             FileStream fstream = new FileStream(fileName, FileMode.Create);
             byte[] outstream = Encoding.ASCII.GetBytes(data.ToCharArray(), 0, data.Length);
@@ -386,41 +388,34 @@ namespace GoldenTubes
             running = false;
             //If it didn't get the message, jam a coathanger in it's vagina.
             upThread.Abort();
-            elThread.Abort();
+			m_timerUpdateElements.Stop();
             //Wait for these fuckers to stop whining.
-            while (upThread.IsAlive && elThread.IsAlive) ;
+            while (upThread.IsAlive) ;
             //Save the update length
             saveJSONData(JsonConvert.SerializeObject(UpdateLength), "UpdateLength.JSON");
         }
 
-        private delegate void delUpdateshit(string currentTime);
-        private void Updateshit(string currentTime)
-        {
-            if (InvokeRequired)
-            {
-                //Honestly, this is just a really complicated way to say "Call this shit with these arguments."
-                try { Invoke(new delUpdateTime(Updateshit), new object[] { currentTime }); } catch { } //AHAHAHAHAHAHAHAHAHAHAHAHAHA
-            }
-            else
-            {
-                //We called shit, and now we just set shit.
-                CurrentTime.Text = currentTime;
+		private void UpdateElements(object sender, EventArgs e)
+		{
+			if (!running)
+			{
+				m_timerUpdateElements.Stop();
+				return;
+			}
 
-                //Logic for the search
-                
-            }
-        }
+			TimeZoneInfo TZInfo = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+			DateTime ESTNow = TimeZoneInfo.ConvertTime(DateTime.Now, TZInfo);
+			DateTime ESTNowNormalized = ESTNow.AddMilliseconds(-ESTNow.Millisecond);
 
-        //More thread bullshit.
-        private void UpdateElements()
-        {
-            while(running) //You get the fucking idea.
-            {
-                TimeZoneInfo TZInfo = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                DateTime ESTNow = TimeZoneInfo.ConvertTime(DateTime.Now, TZInfo);
-                Updateshit(ESTNow.ToString(@"hh\:mm\:ss"));
-            }
-        }
+			if (m_LastClockTime != ESTNowNormalized)
+			{
+				m_LastClockTime = ESTNowNormalized;
+				CurrentTime.Text = ESTNow.ToString(@"hh\:mm\:ss");
+			}
+
+			// set up the timer to fire again at the next second transition
+			m_timerUpdateElements.Interval = 1000 - ESTNow.Millisecond;
+		}
 
         private void UserName_TextChanged(object sender, EventArgs e)
         {
