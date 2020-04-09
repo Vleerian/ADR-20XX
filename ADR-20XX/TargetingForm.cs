@@ -338,14 +338,19 @@ namespace GoldenTubes
 
                     //Our estimate - UpdateStartTime + Seconds into the update we believe the CTE'd nation should be updating
                     double Estimate = TodayStamp.TotalSeconds + NationTime;
-                    //Variance = Actual - Estimate. We compare the time the nation actually updates compared to our estimate
-                    double Variance = NationStamp - Estimate;
+                    //Cumulative Variance = Actual - Estimate. We compare the time the nation actually updates compared to our estimate
+                    double VarianceCumulative = NationStamp - Estimate;
+                    //Because we need to account for variance that has not taken place yet, we need to extrapolate
+                    double VariancePerNation = VarianceCumulative / NationIndex;
 
                     if (Target.Trim() != "" && regionList.Contains(Target.ToLower().Replace(' ', '_'))) //If we have a target
                     {
                         //Our approximate is the first updating nation in that region * the time it takes each nation to update
                         //We can safely use that nation's index because it's index represents the number of nations before it (as lists start with 0, not 1)
-                        double approxtime = (Convert.ToInt32(regionDict[Target.ToLower().Replace(' ', '_')]["FirstNationIndex"]) * TimePerNation);
+                        int TargetIndex = Convert.ToInt32(regionDict[Target.ToLower().Replace(' ', '_')]["FirstNationIndex"]);
+
+                        double approxtime = TargetIndex * TimePerNation;
+                        double Variance = TargetIndex * VariancePerNation;
                         //We add the variance in, and convert it to a time...
                         TimeSpan t = TimeSpan.FromSeconds(approxtime + Variance);
                         //And spit it out for use by the user in the format of HH:MM:SS
