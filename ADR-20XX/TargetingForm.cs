@@ -82,8 +82,13 @@ namespace GoldenTubes
         {
             if(TargetName.Text.Trim() != "")
             {
-                Target = TargetName.Text;
-                string First = regionDict[Target.ToLower().Replace(' ', '_')]["FirstNation"];
+                Target = TargetName.Text.ToLower().Replace(' ', '_');
+                if(!regionDict.ContainsKey(Target))
+                {
+                    MessageBox.Show("Invalid target - region does not exist.", "Error");
+                    return;
+                }
+                string First = regionDict[Target]["FirstNation"];
                 int index = Convert.ToInt32(nationDict[First]["Index"]);
                 string region = nationList[Convert.ToInt32(Math.Round((((index * 0.04) - Convert.ToInt32(TriggerTime.Text)) / 0.04)))];
                 region = nationDict[region]["Region"];
