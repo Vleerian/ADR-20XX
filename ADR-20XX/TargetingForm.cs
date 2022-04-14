@@ -396,7 +396,7 @@ namespace GoldenTubes
         {
             //Set running to false to tell that loop up in the thread function to STOP SLAPPING YOUR DICK AROUND
             running = false;
-            //If it didn't get the message, jam a coathanger in it's vagina.
+            //If it didn't get the message, force-quit
             upThread.Abort();
 			m_timerUpdateElements.Stop();
             //Wait for these fuckers to stop whining.
